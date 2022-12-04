@@ -1,8 +1,10 @@
 # lmdrouter
 
-[![](https://img.shields.io/static/v1?label=godoc&message=reference&color=blue&style=flat-square)](https://godoc.org/github.com/aquasecurity/lmdrouter) [![](https://img.shields.io/github/license/aquasecurity/lmdrouter?style=flat-square)](LICENSE) [![Build Status](https://travis-ci.org/aquasecurity/lmdrouter.svg?branch=master)](https://travis-ci.org/aquasecurity/lmdrouter)
+[![](https://img.shields.io/static/v1?label=godoc&message=reference&color=blue&style=flat-square)](https://godoc.org/github.com/jangraefen/lmdrouter) [![](https://img.shields.io/github/license/jangraefen/lmdrouter?style=flat-square)](LICENSE)
 
 **Go HTTP router library for AWS API Gateway-invoked Lambda Functions**
+
+This is a fork of [Aquasecurities lmdrouter library](https://github.com/aquasecurity/lmdrouter), which contains a fix for incorrect marshaling of some datatypes. If the maintainer of the original library is merging my PR with a fix, I will close this fork again.
 
 ## Table of Contents
 
@@ -61,7 +63,7 @@ parts of the API.
 ## Installation
 
 ```shell
-go get github.com/aquasecurity/lmdrouter
+go get github.com/jangraefen/lmdrouter
 ```
 
 ## Usage
@@ -73,7 +75,7 @@ package main
 
 import (
     "github.com/aws/aws-lambda-go/lambda"
-    "github.com/aquasecurity/lmdrouter"
+    "github.com/jangraefen/lmdrouter"
 )
 
 var router *lmdrouter.Router

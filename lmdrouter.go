@@ -11,11 +11,7 @@
 // is very similar to these libraries and should be familiar to anyone who has
 // written HTTP applications in Go.
 //
-//
-//
-// Use Case
-//
-//
+// # Use Case
 //
 // When building large cloud-native applications, there's a certain balance to
 // strike when it comes to deployment of APIs. On one side of the scale, each API
@@ -32,11 +28,7 @@
 // is also useful for applications where different teams are in charge of different
 // parts of the API.
 //
-//
-//
-// Features
-//
-//
+// # Features
 //
 // * Supports all HTTP methods.
 //
@@ -56,7 +48,6 @@
 //
 // * Implements net/http.Handler for local development and general usage outside
 // of an AWS Lambda environment.
-//
 package lmdrouter
 
 import (
@@ -101,34 +92,33 @@ type resource struct {
 //
 // Example middleware that logs all requests:
 //
-//     func loggerMiddleware(next lmdrouter.Handler) lmdrouter.Handler {
-//         return func(ctx context.Context, req events.APIGatewayProxyRequest) (
-//             res events.APIGatewayProxyResponse,
-//             err error,
-//         ) {
-//             format := "[%s] [%s %s] [%d]%s"
-//             level := "INF"
-//             var code int
-//             var extra string
+//	func loggerMiddleware(next lmdrouter.Handler) lmdrouter.Handler {
+//	    return func(ctx context.Context, req events.APIGatewayProxyRequest) (
+//	        res events.APIGatewayProxyResponse,
+//	        err error,
+//	    ) {
+//	        format := "[%s] [%s %s] [%d]%s"
+//	        level := "INF"
+//	        var code int
+//	        var extra string
 //
-//             res, err = next(ctx, req)
-//             if err != nil {
-//                 level = "ERR"
-//                 code = http.StatusInternalServerError
-//                 extra = " " + err.Error()
-//             } else {
-//                 code = res.StatusCode
-//                 if code >= 400 {
-//                     level = "ERR"
-//                 }
-//             }
+//	        res, err = next(ctx, req)
+//	        if err != nil {
+//	            level = "ERR"
+//	            code = http.StatusInternalServerError
+//	            extra = " " + err.Error()
+//	        } else {
+//	            code = res.StatusCode
+//	            if code >= 400 {
+//	                level = "ERR"
+//	            }
+//	        }
 //
-//             log.Printf(format, level, req.HTTPMethod, req.Path, code, extra)
+//	        log.Printf(format, level, req.HTTPMethod, req.Path, code, extra)
 //
-//             return res, err
-//         }
-//     }
-//
+//	        return res, err
+//	    }
+//	}
 type Middleware func(Handler) Handler
 
 // Handler is a request handler function. It receives a context, and the API
@@ -137,23 +127,22 @@ type Middleware func(Handler) Handler
 //
 // Example:
 //
-//     func listSomethings(ctx context.Context, req events.APIGatewayProxyRequest) (
-//         res events.APIGatewayProxyResponse,
-//         err error,
-//     ) {
-//         // parse input
-//         var input listSomethingsInput
-//         err = lmdrouter.UnmarshalRequest(req, false, &input)
-//         if err != nil {
-//             return lmdrouter.HandleError(err)
-//         }
+//	func listSomethings(ctx context.Context, req events.APIGatewayProxyRequest) (
+//	    res events.APIGatewayProxyResponse,
+//	    err error,
+//	) {
+//	    // parse input
+//	    var input listSomethingsInput
+//	    err = lmdrouter.UnmarshalRequest(req, false, &input)
+//	    if err != nil {
+//	        return lmdrouter.HandleError(err)
+//	    }
 //
-//         // call some business logic that generates an output struct
-//         // ...
+//	    // call some business logic that generates an output struct
+//	    // ...
 //
-//         return lmdrouter.MarshalResponse(http.StatusOK, nil, output)
-//     }
-//
+//	    return lmdrouter.MarshalResponse(http.StatusOK, nil, output)
+//	}
 type Handler func(context.Context, events.APIGatewayProxyRequest) (
 	events.APIGatewayProxyResponse,
 	error,
@@ -223,28 +212,27 @@ func (l *Router) Route(method, path string, handler Handler, middleware ...Middl
 // request, matching the appropriate handler and executing it. This is the
 // method that must be provided to the lambda's `main` function:
 //
-//     package main
+//	package main
 //
-//     import (
-//         "github.com/aws/aws-lambda-go/lambda"
-//         "github.com/aquasecurity/lmdrouter"
-//     )
+//	import (
+//	    "github.com/aws/aws-lambda-go/lambda"
+//	    "github.com/jangraefen/lmdrouter"
+//	)
 //
-//     var router *lmdrouter.Router
+//	var router *lmdrouter.Router
 //
-//     func init() {
-//         router = lmdrouter.NewRouter("/api", loggerMiddleware, authMiddleware)
-//         router.Route("GET", "/", listSomethings)
-//         router.Route("POST", "/", postSomething, someOtherMiddleware)
-//         router.Route("GET", "/:id", getSomething)
-//         router.Route("PUT", "/:id", updateSomething)
-//         router.Route("DELETE", "/:id", deleteSomething)
-//     }
+//	func init() {
+//	    router = lmdrouter.NewRouter("/api", loggerMiddleware, authMiddleware)
+//	    router.Route("GET", "/", listSomethings)
+//	    router.Route("POST", "/", postSomething, someOtherMiddleware)
+//	    router.Route("GET", "/:id", getSomething)
+//	    router.Route("PUT", "/:id", updateSomething)
+//	    router.Route("DELETE", "/:id", deleteSomething)
+//	}
 //
-//     func main() {
-//         lambda.Start(router.Handler)
-//     }
-//
+//	func main() {
+//	    lambda.Start(router.Handler)
+//	}
 func (l *Router) Handler(
 	ctx context.Context,
 	req events.APIGatewayProxyRequest,
